@@ -1,0 +1,53 @@
+{
+  "id": "pol-001",
+  "name": "访问收敛与隔离策略 v1",
+  "snapshot_id": "snap-001",
+  "created_at": "2026-09-24T02:00:00+00:00",
+  "rules": [
+    {
+      "id": "r-base",
+      "name": "阻断个人到物联HTTP",
+      "action": "deny",
+      "src_zone": "zp",
+      "dst_zone": "zi",
+      "service": "http",
+      "requires": [
+        "acl-v2"
+      ],
+      "depends_on": [],
+      "description": ""
+    },
+    {
+      "id": "r-ssh",
+      "name": "阻断机器到个人SSH",
+      "action": "deny",
+      "src_zone": "zm",
+      "dst_zone": "zp",
+      "service": "ssh",
+      "requires": [
+        "acl-v2",
+        "acl-log"
+      ],
+      "depends_on": [
+        "r-base"
+      ],
+      "description": ""
+    },
+    {
+      "id": "r-tel",
+      "name": "放行物联遥测到机器区",
+      "action": "allow",
+      "src_zone": "zi",
+      "dst_zone": "zm",
+      "service": "telemetry",
+      "requires": [
+        "acl-v2"
+      ],
+      "depends_on": [
+        "r-base"
+      ],
+      "description": ""
+    }
+  ],
+  "notes": ""
+}

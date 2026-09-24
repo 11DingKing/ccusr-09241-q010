@@ -1,0 +1,12 @@
+{
+  "id": "exc-002",
+  "rule_id": "r-tel",
+  "reason": "遥测采集器升级窗口",
+  "created_by": "sec-ops",
+  "valid_from": "2026-09-24T02:00:00+00:00",
+  "valid_until": "2026-09-24T03:00:00+00:00",
+  "scope_device_id": null,
+  "revoked_at": null,
+  "renewals": [],
+  "created_at": "2026-09-24T02:00:00+00:00"
+}

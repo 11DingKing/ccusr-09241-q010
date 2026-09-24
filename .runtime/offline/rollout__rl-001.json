@@ -1,0 +1,602 @@
+{
+  "id": "rl-001",
+  "name": "9月收敛批次",
+  "policy_id": "pol-001",
+  "snapshot_id": "snap-001",
+  "created_at": "2026-09-24T04:00:00+00:00",
+  "created_by": "release-manager",
+  "state": "rolled_back",
+  "cursor": 2,
+  "preflight": {
+    "at": "2026-09-24T04:00:00+00:00",
+    "verdict": "ready",
+    "rule_effects": {
+      "r-base": {
+        "rule_id": "r-base",
+        "active": true,
+        "suppressed_by": [],
+        "scoped_out": {},
+        "capable_devices": [
+          "d-p1",
+          "d-p2"
+        ],
+        "unsupported_devices": [
+          "d-p3"
+        ]
+      },
+      "r-ssh": {
+        "rule_id": "r-ssh",
+        "active": true,
+        "suppressed_by": [],
+        "scoped_out": {},
+        "capable_devices": [
+          "d-m1",
+          "d-m2"
+        ],
+        "unsupported_devices": []
+      },
+      "r-tel": {
+        "rule_id": "r-tel",
+        "active": true,
+        "suppressed_by": [],
+        "scoped_out": {},
+        "capable_devices": [
+          "d-i1",
+          "d-i2"
+        ],
+        "unsupported_devices": []
+      }
+    },
+    "flows": [
+      {
+        "src_zone": "zp",
+        "dst_zone": "zi",
+        "service": "http",
+        "critical": false,
+        "before": "allow",
+        "after": "deny",
+        "matched_rule_id": "r-base",
+        "suppressed_rule_id": null,
+        "reasons": [
+          "拒绝规则 r-base 已生效"
+        ],
+        "changed": true
+      },
+      {
+        "src_zone": "zm",
+        "dst_zone": "zp",
+        "service": "ssh",
+        "critical": false,
+        "before": "allow",
+        "after": "deny",
+        "matched_rule_id": "r-ssh",
+        "suppressed_rule_id": null,
+        "reasons": [
+          "拒绝规则 r-ssh 已生效"
+        ],
+        "changed": true
+      },
+      {
+        "src_zone": "zi",
+        "dst_zone": "zm",
+        "service": "telemetry",
+        "critical": true,
+        "before": "deny",
+        "after": "allow",
+        "matched_rule_id": "r-tel",
+        "suppressed_rule_id": null,
+        "reasons": [
+          "允许规则 r-tel 可在能力设备上落地"
+        ],
+        "changed": true
+      }
+    ],
+    "expired_exceptions": [
+      "exc-002"
+    ],
+    "active_exceptions": [],
+    "critical_impacts": [],
+    "enforcement_gaps": [
+      {
+        "rule_id": "r-base",
+        "src_zone": "zp",
+        "dst_zone": "zi",
+        "service": "http",
+        "unsupported_devices": [
+          "d-p3"
+        ],
+        "critical": false
+      }
+    ],
+    "warnings": []
+  },
+  "pause_reason": "指标越界: [{'metric': 'error_rate', 'value': 0.25, 'bounds': {'max': 0.01}}]",
+  "batches": [
+    {
+      "index": 0,
+      "name": "canary",
+      "is_canary": true,
+      "zone_ids": [
+        "zi",
+        "zm",
+        "zp"
+      ],
+      "commands": [
+        {
+          "id": "cmd-001",
+          "key": "b0:r-base@d-p1",
+          "batch_index": 0,
+          "rule_id": "r-base",
+          "device_id": "d-p1",
+          "topo_seq": 0,
+          "state": "applied",
+          "revision": 1,
+          "dispatched_at": "2026-09-24T04:00:00+00:00",
+          "updated_at": "2026-09-24T04:00:45+00:00",
+          "duplicate_dispatches": 1,
+          "receipts": [
+            {
+              "command_id": "cmd-001",
+              "revision": 0,
+              "claimed_state": "acked",
+              "produced_at": "2026-09-24T04:00:35+00:00",
+              "received_at": "2026-09-24T04:00:35+00:00",
+              "accepted": false,
+              "reason": "过期回执：回执版本 r0 早于命令当前版本 r1，拒绝覆盖"
+            },
+            {
+              "command_id": "cmd-001",
+              "revision": 1,
+              "claimed_state": "acked",
+              "produced_at": "2026-09-24T04:00:35+00:00",
+              "received_at": "2026-09-24T04:00:35+00:00",
+              "accepted": true,
+              "reason": "accepted"
+            },
+            {
+              "command_id": "cmd-001",
+              "revision": 1,
+              "claimed_state": "applied",
+              "produced_at": "2026-09-24T04:00:45+00:00",
+              "received_at": "2026-09-24T04:00:45+00:00",
+              "accepted": true,
+              "reason": "accepted"
+            },
+            {
+              "command_id": "cmd-001",
+              "revision": 0,
+              "claimed_state": "dispatched",
+              "produced_at": "2026-09-24T04:02:25+00:00",
+              "received_at": "2026-09-24T04:02:25+00:00",
+              "accepted": false,
+              "reason": "过期回执：回执版本 r0 早于命令当前版本 r1，拒绝覆盖"
+            },
+            {
+              "command_id": "cmd-001",
+              "revision": 1,
+              "claimed_state": "acked",
+              "produced_at": "2026-09-24T04:02:25+00:00",
+              "received_at": "2026-09-24T04:02:25+00:00",
+              "accepted": false,
+              "reason": "乱序回执：acked(秩2) 晚到，当前状态 applied(秩4)，拒绝回退"
+            }
+          ]
+        },
+        {
+          "id": "cmd-002",
+          "key": "b0:r-ssh@d-m1",
+          "batch_index": 0,
+          "rule_id": "r-ssh",
+          "device_id": "d-m1",
+          "topo_seq": 1,
+          "state": "applied",
+          "revision": 1,
+          "dispatched_at": "2026-09-24T04:00:00+00:00",
+          "updated_at": "2026-09-24T04:00:45+00:00",
+          "duplicate_dispatches": 1,
+          "receipts": [
+            {
+              "command_id": "cmd-002",
+              "revision": 1,
+              "claimed_state": "acked",
+              "produced_at": "2026-09-24T04:00:45+00:00",
+              "received_at": "2026-09-24T04:00:45+00:00",
+              "accepted": true,
+              "reason": "accepted"
+            },
+            {
+              "command_id": "cmd-002",
+              "revision": 1,
+              "claimed_state": "applied",
+              "produced_at": "2026-09-24T04:00:45+00:00",
+              "received_at": "2026-09-24T04:00:45+00:00",
+              "accepted": true,
+              "reason": "accepted"
+            },
+            {
+              "command_id": "cmd-002",
+              "revision": 1,
+              "claimed_state": "applied",
+              "produced_at": "2026-09-24T04:00:45+00:00",
+              "received_at": "2026-09-24T04:00:45+00:00",
+              "accepted": false,
+              "reason": "重复回执：状态已经是 applied，幂等忽略"
+            }
+          ]
+        },
+        {
+          "id": "cmd-003",
+          "key": "b0:r-tel@d-i2",
+          "batch_index": 0,
+          "rule_id": "r-tel",
+          "device_id": "d-i2",
+          "topo_seq": 2,
+          "state": "applied",
+          "revision": 1,
+          "dispatched_at": "2026-09-24T04:00:00+00:00",
+          "updated_at": "2026-09-24T04:00:45+00:00",
+          "duplicate_dispatches": 1,
+          "receipts": [
+            {
+              "command_id": "cmd-003",
+              "revision": 1,
+              "claimed_state": "acked",
+              "produced_at": "2026-09-24T04:00:45+00:00",
+              "received_at": "2026-09-24T04:00:45+00:00",
+              "accepted": true,
+              "reason": "accepted"
+            },
+            {
+              "command_id": "cmd-003",
+              "revision": 1,
+              "claimed_state": "applied",
+              "produced_at": "2026-09-24T04:00:45+00:00",
+              "received_at": "2026-09-24T04:00:45+00:00",
+              "accepted": true,
+              "reason": "accepted"
+            },
+            {
+              "command_id": "cmd-003",
+              "revision": 1,
+              "claimed_state": "acked",
+              "produced_at": "2026-09-24T04:00:45+00:00",
+              "received_at": "2026-09-24T04:00:45+00:00",
+              "accepted": false,
+              "reason": "乱序回执：acked(秩2) 晚到，当前状态 applied(秩4)，拒绝回退"
+            }
+          ]
+        }
+      ],
+      "gate": {
+        "min_applied_ratio": 1.0,
+        "metrics": {
+          "availability": {
+            "min": 0.99
+          },
+          "error_rate": {
+            "max": 0.01
+          }
+        },
+        "min_evidence": 1
+      },
+      "required_roles": [
+        "release_manager",
+        "security_admin"
+      ],
+      "state": "rolled_back",
+      "evidence": [
+        {
+          "id": "ev-001",
+          "batch_index": 0,
+          "metric": "availability",
+          "value": 0.9995,
+          "source": "probe-mesh",
+          "adopted_by": "sre-oncall",
+          "at": "2026-09-24T04:00:45+00:00",
+          "in_range": true
+        },
+        {
+          "id": "ev-002",
+          "batch_index": 0,
+          "metric": "error_rate",
+          "value": 0.0008,
+          "source": "probe-mesh",
+          "adopted_by": "sre-oncall",
+          "at": "2026-09-24T04:00:45+00:00",
+          "in_range": true
+        }
+      ],
+      "approvals": [
+        {
+          "role": "release_manager",
+          "actor": "rm-zhang",
+          "at": "2026-09-24T04:00:00+00:00",
+          "comment": "先在金丝雀设备验证"
+        },
+        {
+          "role": "security_admin",
+          "actor": "sec-li",
+          "at": "2026-09-24T04:00:00+00:00",
+          "comment": "安全侧同意"
+        }
+      ],
+      "started_at": "2026-09-24T04:00:00+00:00",
+      "completed_at": "2026-09-24T04:00:45+00:00"
+    },
+    {
+      "index": 1,
+      "name": "wave-personal-zp",
+      "is_canary": false,
+      "zone_ids": [
+        "zp"
+      ],
+      "commands": [
+        {
+          "id": "cmd-004",
+          "key": "b1:r-base@d-p2",
+          "batch_index": 1,
+          "rule_id": "r-base",
+          "device_id": "d-p2",
+          "topo_seq": 0,
+          "state": "applied",
+          "revision": 1,
+          "dispatched_at": "2026-09-24T04:00:45+00:00",
+          "updated_at": "2026-09-24T04:01:05+00:00",
+          "duplicate_dispatches": 0,
+          "receipts": [
+            {
+              "command_id": "cmd-004",
+              "revision": 1,
+              "claimed_state": "applied",
+              "produced_at": "2026-09-24T04:01:05+00:00",
+              "received_at": "2026-09-24T04:01:05+00:00",
+              "accepted": true,
+              "reason": "accepted"
+            }
+          ]
+        }
+      ],
+      "gate": {
+        "min_applied_ratio": 1.0,
+        "metrics": {
+          "availability": {
+            "min": 0.99
+          },
+          "error_rate": {
+            "max": 0.01
+          }
+        },
+        "min_evidence": 1
+      },
+      "required_roles": [
+        "security_admin",
+        "personal_zone_owner"
+      ],
+      "state": "rolled_back",
+      "evidence": [
+        {
+          "id": "ev-003",
+          "batch_index": 1,
+          "metric": "availability",
+          "value": 0.998,
+          "source": "probe-mesh",
+          "adopted_by": "sre-oncall",
+          "at": "2026-09-24T04:01:05+00:00",
+          "in_range": true
+        },
+        {
+          "id": "ev-004",
+          "batch_index": 1,
+          "metric": "error_rate",
+          "value": 0.002,
+          "source": "probe-mesh",
+          "adopted_by": "sre-oncall",
+          "at": "2026-09-24T04:01:05+00:00",
+          "in_range": true
+        }
+      ],
+      "approvals": [
+        {
+          "role": "security_admin",
+          "actor": "sec-li",
+          "at": "2026-09-24T04:00:45+00:00",
+          "comment": ""
+        },
+        {
+          "role": "personal_zone_owner",
+          "actor": "zone-chen",
+          "at": "2026-09-24T04:00:45+00:00",
+          "comment": ""
+        }
+      ],
+      "started_at": "2026-09-24T04:00:45+00:00",
+      "completed_at": "2026-09-24T04:01:05+00:00"
+    },
+    {
+      "index": 2,
+      "name": "wave-machine-zm",
+      "is_canary": false,
+      "zone_ids": [
+        "zm"
+      ],
+      "commands": [
+        {
+          "id": "cmd-005",
+          "key": "b2:r-ssh@d-m2",
+          "batch_index": 2,
+          "rule_id": "r-ssh",
+          "device_id": "d-m2",
+          "topo_seq": 1,
+          "state": "applied",
+          "revision": 1,
+          "dispatched_at": "2026-09-24T04:01:05+00:00",
+          "updated_at": "2026-09-24T04:01:25+00:00",
+          "duplicate_dispatches": 0,
+          "receipts": [
+            {
+              "command_id": "cmd-005",
+              "revision": 1,
+              "claimed_state": "applied",
+              "produced_at": "2026-09-24T04:01:25+00:00",
+              "received_at": "2026-09-24T04:01:25+00:00",
+              "accepted": true,
+              "reason": "accepted"
+            }
+          ]
+        }
+      ],
+      "gate": {
+        "min_applied_ratio": 1.0,
+        "metrics": {
+          "availability": {
+            "min": 0.99
+          },
+          "error_rate": {
+            "max": 0.01
+          }
+        },
+        "min_evidence": 1
+      },
+      "required_roles": [
+        "security_admin",
+        "machine_zone_owner"
+      ],
+      "state": "rolled_back",
+      "evidence": [
+        {
+          "id": "ev-005",
+          "batch_index": 2,
+          "metric": "error_rate",
+          "value": 0.25,
+          "source": "probe-mesh",
+          "adopted_by": "sre-oncall",
+          "at": "2026-09-24T04:02:25+00:00",
+          "in_range": false
+        }
+      ],
+      "approvals": [
+        {
+          "role": "security_admin",
+          "actor": "sec-li",
+          "at": "2026-09-24T04:01:05+00:00",
+          "comment": ""
+        },
+        {
+          "role": "machine_zone_owner",
+          "actor": "zone-sun",
+          "at": "2026-09-24T04:01:05+00:00",
+          "comment": ""
+        }
+      ],
+      "started_at": "2026-09-24T04:01:05+00:00",
+      "completed_at": null
+    },
+    {
+      "index": 3,
+      "name": "wave-iot-zi",
+      "is_canary": false,
+      "zone_ids": [
+        "zi"
+      ],
+      "commands": [
+        {
+          "id": "cmd-006",
+          "key": "b3:r-tel@d-i1",
+          "batch_index": 3,
+          "rule_id": "r-tel",
+          "device_id": "d-i1",
+          "topo_seq": 2,
+          "state": "pending",
+          "revision": 0,
+          "dispatched_at": null,
+          "updated_at": null,
+          "duplicate_dispatches": 0,
+          "receipts": []
+        }
+      ],
+      "gate": {
+        "min_applied_ratio": 1.0,
+        "metrics": {
+          "availability": {
+            "min": 0.99
+          },
+          "error_rate": {
+            "max": 0.01
+          }
+        },
+        "min_evidence": 1
+      },
+      "required_roles": [
+        "security_admin",
+        "iot_zone_owner"
+      ],
+      "state": "held",
+      "evidence": [],
+      "approvals": [],
+      "started_at": null,
+      "completed_at": null
+    }
+  ],
+  "rollback_plan": {
+    "created_at": "2026-09-24T04:02:25+00:00",
+    "reason": "指标越界: [{'metric': 'error_rate', 'value': 0.25, 'bounds': {'max': 0.01}}]",
+    "executed": true,
+    "steps": [
+      {
+        "seq": 1,
+        "command_id": "cmd-005",
+        "batch_index": 2,
+        "rule_id": "r-ssh",
+        "device_id": "d-m2",
+        "topo_seq": 1,
+        "status": "done",
+        "reason": "",
+        "executed_at": "2026-09-24T04:02:25+00:00"
+      },
+      {
+        "seq": 2,
+        "command_id": "cmd-004",
+        "batch_index": 1,
+        "rule_id": "r-base",
+        "device_id": "d-p2",
+        "topo_seq": 0,
+        "status": "done",
+        "reason": "",
+        "executed_at": "2026-09-24T04:02:25+00:00"
+      },
+      {
+        "seq": 3,
+        "command_id": "cmd-003",
+        "batch_index": 0,
+        "rule_id": "r-tel",
+        "device_id": "d-i2",
+        "topo_seq": 2,
+        "status": "done",
+        "reason": "",
+        "executed_at": "2026-09-24T04:02:25+00:00"
+      },
+      {
+        "seq": 4,
+        "command_id": "cmd-002",
+        "batch_index": 0,
+        "rule_id": "r-ssh",
+        "device_id": "d-m1",
+        "topo_seq": 1,
+        "status": "done",
+        "reason": "",
+        "executed_at": "2026-09-24T04:02:25+00:00"
+      },
+      {
+        "seq": 5,
+        "command_id": "cmd-001",
+        "batch_index": 0,
+        "rule_id": "r-base",
+        "device_id": "d-p1",
+        "topo_seq": 0,
+        "status": "done",
+        "reason": "",
+        "executed_at": "2026-09-24T04:02:25+00:00"
+      }
+    ]
+  }
+}

@@ -1,0 +1,873 @@
+{
+  "entries": [
+    {
+      "seq": 1,
+      "ts": "2026-09-24T02:00:00+00:00",
+      "actor": "topo-admin",
+      "action": "snapshot.created",
+      "payload": {
+        "snapshot_id": "snap-001",
+        "name": "三区域融合拓扑"
+      },
+      "prev_hash": "GENESIS",
+      "hash": "6cdc2f8c0b17e7b11b145737c2d3d968f9d77c26616c702585e651c29e800403"
+    },
+    {
+      "seq": 2,
+      "ts": "2026-09-24T02:00:00+00:00",
+      "actor": "security-admin",
+      "action": "policy.created",
+      "payload": {
+        "policy_id": "pol-001",
+        "snapshot_id": "snap-001",
+        "rule_count": 3
+      },
+      "prev_hash": "6cdc2f8c0b17e7b11b145737c2d3d968f9d77c26616c702585e651c29e800403",
+      "hash": "aade780a5dcdade354e98daa6c28095aad683c1f95440c17bb4f4b4154d338a0"
+    },
+    {
+      "seq": 3,
+      "ts": "2026-09-24T02:00:00+00:00",
+      "actor": "sec-ops",
+      "action": "exception.created",
+      "payload": {
+        "exception_id": "exc-001",
+        "rule_id": "r-ssh",
+        "valid_until": "2026-10-01T02:00:00+00:00",
+        "reason": "机器区跳板机改造期临时保留 SSH"
+      },
+      "prev_hash": "aade780a5dcdade354e98daa6c28095aad683c1f95440c17bb4f4b4154d338a0",
+      "hash": "e99eabec19e0304252f82765ba5e75c6465c7686a6b11e5fba474cc6e6aaa5d7"
+    },
+    {
+      "seq": 4,
+      "ts": "2026-09-24T02:00:00+00:00",
+      "actor": "sec-ops",
+      "action": "exception.created",
+      "payload": {
+        "exception_id": "exc-002",
+        "rule_id": "r-tel",
+        "valid_until": "2026-09-24T03:00:00+00:00",
+        "reason": "遥测采集器升级窗口"
+      },
+      "prev_hash": "e99eabec19e0304252f82765ba5e75c6465c7686a6b11e5fba474cc6e6aaa5d7",
+      "hash": "fb865d835ef4aace16f6fdce0beefe21aa6703d47109f2baccefe81bffa29f3d"
+    },
+    {
+      "seq": 5,
+      "ts": "2026-09-24T02:10:00+00:00",
+      "actor": "sec-ops",
+      "action": "exception.renewed",
+      "payload": {
+        "exception_id": "exc-001",
+        "rule_id": "r-ssh",
+        "previous_until": "2026-10-01T02:00:00+00:00",
+        "new_until": "2026-10-24T02:10:00+00:00",
+        "reason": "改造延期，续期30天"
+      },
+      "prev_hash": "fb865d835ef4aace16f6fdce0beefe21aa6703d47109f2baccefe81bffa29f3d",
+      "hash": "3194d5ab3b3d9c9d2487c6df1e2ff2c962294eae0858698ad2c5cf8ef2684afa"
+    },
+    {
+      "seq": 6,
+      "ts": "2026-09-24T04:00:00+00:00",
+      "actor": "security-admin",
+      "action": "exception.revoked",
+      "payload": {
+        "exception_id": "exc-001",
+        "rule_id": "r-ssh"
+      },
+      "prev_hash": "3194d5ab3b3d9c9d2487c6df1e2ff2c962294eae0858698ad2c5cf8ef2684afa",
+      "hash": "71ad81582bf78ed9b34276dfb7222beedb3de5185ea72b4164af13d561474db8"
+    },
+    {
+      "seq": 7,
+      "ts": "2026-09-24T04:00:00+00:00",
+      "actor": "release-manager",
+      "action": "rollout.created",
+      "payload": {
+        "rollout_id": "rl-001",
+        "policy_id": "pol-001",
+        "batch_count": 4,
+        "deferred_rules": [],
+        "uncovered": [
+          {
+            "rule_id": "r-base",
+            "device_id": "d-p3",
+            "missing": [
+              "acl-v2"
+            ]
+          }
+        ],
+        "expired_exceptions": [
+          "exc-002"
+        ],
+        "active_exceptions": []
+      },
+      "prev_hash": "71ad81582bf78ed9b34276dfb7222beedb3de5185ea72b4164af13d561474db8",
+      "hash": "6d262a7e905c4fa331a15c4cccbf3c099c29842de2372da7c33da712b9207901"
+    },
+    {
+      "seq": 8,
+      "ts": "2026-09-24T04:00:00+00:00",
+      "actor": "rm-zhang",
+      "action": "batch.approved",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "role": "release_manager",
+        "comment": "先在金丝雀设备验证"
+      },
+      "prev_hash": "6d262a7e905c4fa331a15c4cccbf3c099c29842de2372da7c33da712b9207901",
+      "hash": "655ebc62cd1238141497eb2a5c000f55538311b515f2e3184f25cd1d179b8469"
+    },
+    {
+      "seq": 9,
+      "ts": "2026-09-24T04:00:00+00:00",
+      "actor": "sec-li",
+      "action": "batch.approved",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "role": "security_admin",
+        "comment": "安全侧同意"
+      },
+      "prev_hash": "655ebc62cd1238141497eb2a5c000f55538311b515f2e3184f25cd1d179b8469",
+      "hash": "02e9ba32e99fdf45247c44d3490c4dd799a46656c232eec5c88f901dce2ae76b"
+    },
+    {
+      "seq": 10,
+      "ts": "2026-09-24T04:00:00+00:00",
+      "actor": "dispatcher",
+      "action": "batch.dispatched",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "new_commands": 3,
+        "duplicate_commands": 0,
+        "command_ids": [
+          "cmd-001",
+          "cmd-002",
+          "cmd-003"
+        ],
+        "duplicate_ids": [],
+        "resend": false
+      },
+      "prev_hash": "02e9ba32e99fdf45247c44d3490c4dd799a46656c232eec5c88f901dce2ae76b",
+      "hash": "7dac2fa6d0f3914b45a0d3973df89660333fab632dd0fdd64e909c332b2fc9b1"
+    },
+    {
+      "seq": 11,
+      "ts": "2026-09-24T04:00:05+00:00",
+      "actor": "dispatcher",
+      "action": "batch.dispatched",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "new_commands": 0,
+        "duplicate_commands": 3,
+        "command_ids": [],
+        "duplicate_ids": [
+          "cmd-001",
+          "cmd-002",
+          "cmd-003"
+        ],
+        "resend": true
+      },
+      "prev_hash": "7dac2fa6d0f3914b45a0d3973df89660333fab632dd0fdd64e909c332b2fc9b1",
+      "hash": "28deb3681ba121c8ba309e8448ee8ce8eb1bf8327c71b509f64723a217bdb169"
+    },
+    {
+      "seq": 12,
+      "ts": "2026-09-24T04:00:35+00:00",
+      "actor": "device",
+      "action": "receipt.received",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "command_id": "cmd-001",
+        "revision": 0,
+        "claimed_state": "acked",
+        "produced_at": "2026-09-24T04:00:35+00:00",
+        "accepted": false,
+        "reason": "过期回执：回执版本 r0 早于命令当前版本 r1，拒绝覆盖"
+      },
+      "prev_hash": "28deb3681ba121c8ba309e8448ee8ce8eb1bf8327c71b509f64723a217bdb169",
+      "hash": "3ed541be1a6629a24645506fe483ec5b039f72381adf7a56777dbd10fbb50f5d"
+    },
+    {
+      "seq": 13,
+      "ts": "2026-09-24T04:00:35+00:00",
+      "actor": "device",
+      "action": "receipt.received",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "command_id": "cmd-001",
+        "revision": 1,
+        "claimed_state": "acked",
+        "produced_at": "2026-09-24T04:00:35+00:00",
+        "accepted": true,
+        "reason": "accepted"
+      },
+      "prev_hash": "3ed541be1a6629a24645506fe483ec5b039f72381adf7a56777dbd10fbb50f5d",
+      "hash": "679f00a2377c23cbbae7d1178157409cf7b3d2782a342d3426ea17072b91f888"
+    },
+    {
+      "seq": 14,
+      "ts": "2026-09-24T04:00:45+00:00",
+      "actor": "device",
+      "action": "receipt.received",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "command_id": "cmd-001",
+        "revision": 1,
+        "claimed_state": "applied",
+        "produced_at": "2026-09-24T04:00:45+00:00",
+        "accepted": true,
+        "reason": "accepted"
+      },
+      "prev_hash": "679f00a2377c23cbbae7d1178157409cf7b3d2782a342d3426ea17072b91f888",
+      "hash": "5d1e0685de7fd0692da8c23412674f4b6c1c0fcc680d7c0bd0f5da70cefe0b5c"
+    },
+    {
+      "seq": 15,
+      "ts": "2026-09-24T04:00:45+00:00",
+      "actor": "device",
+      "action": "receipt.received",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "command_id": "cmd-003",
+        "revision": 1,
+        "claimed_state": "acked",
+        "produced_at": "2026-09-24T04:00:45+00:00",
+        "accepted": true,
+        "reason": "accepted"
+      },
+      "prev_hash": "5d1e0685de7fd0692da8c23412674f4b6c1c0fcc680d7c0bd0f5da70cefe0b5c",
+      "hash": "a197b98d373a3407acc1a7c0c74266947f94807aeaf6423e6fbc21f7e99b3656"
+    },
+    {
+      "seq": 16,
+      "ts": "2026-09-24T04:00:45+00:00",
+      "actor": "device",
+      "action": "receipt.received",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "command_id": "cmd-003",
+        "revision": 1,
+        "claimed_state": "applied",
+        "produced_at": "2026-09-24T04:00:45+00:00",
+        "accepted": true,
+        "reason": "accepted"
+      },
+      "prev_hash": "a197b98d373a3407acc1a7c0c74266947f94807aeaf6423e6fbc21f7e99b3656",
+      "hash": "aa18cdf06a038d7e4756adc48396649f620fba1bdb74ea154683c9e5d1b952f4"
+    },
+    {
+      "seq": 17,
+      "ts": "2026-09-24T04:00:45+00:00",
+      "actor": "device",
+      "action": "receipt.received",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "command_id": "cmd-003",
+        "revision": 1,
+        "claimed_state": "acked",
+        "produced_at": "2026-09-24T04:00:45+00:00",
+        "accepted": false,
+        "reason": "乱序回执：acked(秩2) 晚到，当前状态 applied(秩4)，拒绝回退"
+      },
+      "prev_hash": "aa18cdf06a038d7e4756adc48396649f620fba1bdb74ea154683c9e5d1b952f4",
+      "hash": "f61e7daccd040219cf3dff02faec280c32403521662aa0032b163c8cf7940192"
+    },
+    {
+      "seq": 18,
+      "ts": "2026-09-24T04:00:45+00:00",
+      "actor": "device",
+      "action": "receipt.received",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "command_id": "cmd-002",
+        "revision": 1,
+        "claimed_state": "acked",
+        "produced_at": "2026-09-24T04:00:45+00:00",
+        "accepted": true,
+        "reason": "accepted"
+      },
+      "prev_hash": "f61e7daccd040219cf3dff02faec280c32403521662aa0032b163c8cf7940192",
+      "hash": "9954c91060a658c4bf7fd8b078372c4fc8af53480fa79210145054654516fbec"
+    },
+    {
+      "seq": 19,
+      "ts": "2026-09-24T04:00:45+00:00",
+      "actor": "device",
+      "action": "receipt.received",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "command_id": "cmd-002",
+        "revision": 1,
+        "claimed_state": "applied",
+        "produced_at": "2026-09-24T04:00:45+00:00",
+        "accepted": true,
+        "reason": "accepted"
+      },
+      "prev_hash": "9954c91060a658c4bf7fd8b078372c4fc8af53480fa79210145054654516fbec",
+      "hash": "17a42ddfbf3e935ba3cd2194ac2f494c6e44b9bb8cb56e86e6454698c3a0173e"
+    },
+    {
+      "seq": 20,
+      "ts": "2026-09-24T04:00:45+00:00",
+      "actor": "device",
+      "action": "receipt.received",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "command_id": "cmd-002",
+        "revision": 1,
+        "claimed_state": "applied",
+        "produced_at": "2026-09-24T04:00:45+00:00",
+        "accepted": false,
+        "reason": "重复回执：状态已经是 applied，幂等忽略"
+      },
+      "prev_hash": "17a42ddfbf3e935ba3cd2194ac2f494c6e44b9bb8cb56e86e6454698c3a0173e",
+      "hash": "7ae28f855a2624c7d99cc0b9f0e6467afe1b377bc3c6bdcad747a12f1b6cdeea"
+    },
+    {
+      "seq": 21,
+      "ts": "2026-09-24T04:00:45+00:00",
+      "actor": "sre-oncall",
+      "action": "evidence.adopted",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "metric": "availability",
+        "value": 0.9995,
+        "source": "probe-mesh",
+        "evidence_id": "ev-001"
+      },
+      "prev_hash": "7ae28f855a2624c7d99cc0b9f0e6467afe1b377bc3c6bdcad747a12f1b6cdeea",
+      "hash": "5c23d883ef10f52466562ff7ab6bbd3c9426d99d80afb4e877974353dec2a9c4"
+    },
+    {
+      "seq": 22,
+      "ts": "2026-09-24T04:00:45+00:00",
+      "actor": "sre-oncall",
+      "action": "evidence.adopted",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "metric": "error_rate",
+        "value": 0.0008,
+        "source": "probe-mesh",
+        "evidence_id": "ev-002"
+      },
+      "prev_hash": "5c23d883ef10f52466562ff7ab6bbd3c9426d99d80afb4e877974353dec2a9c4",
+      "hash": "580a6044761a092757e6dbedd1dbae4de10d1a0179cd1212da953ee3061c72fa"
+    },
+    {
+      "seq": 23,
+      "ts": "2026-09-24T04:00:45+00:00",
+      "actor": "release-manager",
+      "action": "batch.completed",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "gate": {
+          "passed": true,
+          "applied_ratio": 1.0,
+          "ratio_ok": true,
+          "metrics_ok": true,
+          "enough_evidence": true,
+          "metrics": {
+            "availability": {
+              "ok": true,
+              "value": 0.9995,
+              "reason": ""
+            },
+            "error_rate": {
+              "ok": true,
+              "value": 0.0008,
+              "reason": ""
+            }
+          }
+        },
+        "rollout_completed": false,
+        "next_cursor": 1
+      },
+      "prev_hash": "580a6044761a092757e6dbedd1dbae4de10d1a0179cd1212da953ee3061c72fa",
+      "hash": "1b88485b06a38c801fda49238c0ac976e50c278c6f5e7df0faff2e84618d9969"
+    },
+    {
+      "seq": 24,
+      "ts": "2026-09-24T04:00:45+00:00",
+      "actor": "sec-li",
+      "action": "batch.approved",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 1,
+        "role": "security_admin",
+        "comment": ""
+      },
+      "prev_hash": "1b88485b06a38c801fda49238c0ac976e50c278c6f5e7df0faff2e84618d9969",
+      "hash": "85773c87b84d37b5a5136eb4d5ad2d8852659f30d1d65b12ce7c4fd13078c171"
+    },
+    {
+      "seq": 25,
+      "ts": "2026-09-24T04:00:45+00:00",
+      "actor": "zone-chen",
+      "action": "batch.approved",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 1,
+        "role": "personal_zone_owner",
+        "comment": ""
+      },
+      "prev_hash": "85773c87b84d37b5a5136eb4d5ad2d8852659f30d1d65b12ce7c4fd13078c171",
+      "hash": "7e104bf203711a2d18f5c593a09026a3909332d9c20a3b3b575e900b08c8064d"
+    },
+    {
+      "seq": 26,
+      "ts": "2026-09-24T04:00:45+00:00",
+      "actor": "dispatcher",
+      "action": "batch.dispatched",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 1,
+        "new_commands": 1,
+        "duplicate_commands": 0,
+        "command_ids": [
+          "cmd-004"
+        ],
+        "duplicate_ids": [],
+        "resend": false
+      },
+      "prev_hash": "7e104bf203711a2d18f5c593a09026a3909332d9c20a3b3b575e900b08c8064d",
+      "hash": "8bc6cd8ce1767f7a372571b90ab9efaf112e0c4f5491f8b6745b0c2106885673"
+    },
+    {
+      "seq": 27,
+      "ts": "2026-09-24T04:01:05+00:00",
+      "actor": "device",
+      "action": "receipt.received",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 1,
+        "command_id": "cmd-004",
+        "revision": 1,
+        "claimed_state": "applied",
+        "produced_at": "2026-09-24T04:01:05+00:00",
+        "accepted": true,
+        "reason": "accepted"
+      },
+      "prev_hash": "8bc6cd8ce1767f7a372571b90ab9efaf112e0c4f5491f8b6745b0c2106885673",
+      "hash": "b877616ffe8e4ec9b59d815b8daa999beb73a75f3b8593e62b8a9a60efc04f20"
+    },
+    {
+      "seq": 28,
+      "ts": "2026-09-24T04:01:05+00:00",
+      "actor": "sre-oncall",
+      "action": "evidence.adopted",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 1,
+        "metric": "availability",
+        "value": 0.998,
+        "source": "probe-mesh",
+        "evidence_id": "ev-003"
+      },
+      "prev_hash": "b877616ffe8e4ec9b59d815b8daa999beb73a75f3b8593e62b8a9a60efc04f20",
+      "hash": "1874b6eba87943ee32c73c0ba7e16af79ad37d125ccbf9099ffcc1bd7472dea0"
+    },
+    {
+      "seq": 29,
+      "ts": "2026-09-24T04:01:05+00:00",
+      "actor": "sre-oncall",
+      "action": "evidence.adopted",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 1,
+        "metric": "error_rate",
+        "value": 0.002,
+        "source": "probe-mesh",
+        "evidence_id": "ev-004"
+      },
+      "prev_hash": "1874b6eba87943ee32c73c0ba7e16af79ad37d125ccbf9099ffcc1bd7472dea0",
+      "hash": "fab258976353f09e5d833210b55f690984ec881232b921a6cd7973dc2eee99a4"
+    },
+    {
+      "seq": 30,
+      "ts": "2026-09-24T04:01:05+00:00",
+      "actor": "release-manager",
+      "action": "batch.completed",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 1,
+        "gate": {
+          "passed": true,
+          "applied_ratio": 1.0,
+          "ratio_ok": true,
+          "metrics_ok": true,
+          "enough_evidence": true,
+          "metrics": {
+            "availability": {
+              "ok": true,
+              "value": 0.998,
+              "reason": ""
+            },
+            "error_rate": {
+              "ok": true,
+              "value": 0.002,
+              "reason": ""
+            }
+          }
+        },
+        "rollout_completed": false,
+        "next_cursor": 2
+      },
+      "prev_hash": "fab258976353f09e5d833210b55f690984ec881232b921a6cd7973dc2eee99a4",
+      "hash": "8ec46eff73e2d3416c931c482840683dbe70fa7549a3c6d763f641f8f0772169"
+    },
+    {
+      "seq": 31,
+      "ts": "2026-09-24T04:01:05+00:00",
+      "actor": "sec-li",
+      "action": "batch.approved",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 2,
+        "role": "security_admin",
+        "comment": ""
+      },
+      "prev_hash": "8ec46eff73e2d3416c931c482840683dbe70fa7549a3c6d763f641f8f0772169",
+      "hash": "9a598f7859e6ee3299a8430adb179445914d43cfc2f1a66d1d7da703bf862b2e"
+    },
+    {
+      "seq": 32,
+      "ts": "2026-09-24T04:01:05+00:00",
+      "actor": "zone-sun",
+      "action": "batch.approved",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 2,
+        "role": "machine_zone_owner",
+        "comment": ""
+      },
+      "prev_hash": "9a598f7859e6ee3299a8430adb179445914d43cfc2f1a66d1d7da703bf862b2e",
+      "hash": "4d235a70750e09026046134688b8490d578ea731509c9ddccc9d82dfd2fbb6b3"
+    },
+    {
+      "seq": 33,
+      "ts": "2026-09-24T04:01:05+00:00",
+      "actor": "dispatcher",
+      "action": "batch.dispatched",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 2,
+        "new_commands": 1,
+        "duplicate_commands": 0,
+        "command_ids": [
+          "cmd-005"
+        ],
+        "duplicate_ids": [],
+        "resend": false
+      },
+      "prev_hash": "4d235a70750e09026046134688b8490d578ea731509c9ddccc9d82dfd2fbb6b3",
+      "hash": "147f1d9e6d4b45e22e02a2a07e2a58d4598c42328ca92395bba79ea3cf9d8119"
+    },
+    {
+      "seq": 34,
+      "ts": "2026-09-24T04:01:25+00:00",
+      "actor": "device",
+      "action": "receipt.received",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 2,
+        "command_id": "cmd-005",
+        "revision": 1,
+        "claimed_state": "applied",
+        "produced_at": "2026-09-24T04:01:25+00:00",
+        "accepted": true,
+        "reason": "accepted"
+      },
+      "prev_hash": "147f1d9e6d4b45e22e02a2a07e2a58d4598c42328ca92395bba79ea3cf9d8119",
+      "hash": "a193eaa6abe2b5c98e2754da124a70a69002a76710f9f8f639a8dddc3e7d5792"
+    },
+    {
+      "seq": 35,
+      "ts": "2026-09-24T04:02:25+00:00",
+      "actor": "sre-oncall",
+      "action": "evidence.adopted",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 2,
+        "metric": "error_rate",
+        "value": 0.25,
+        "source": "probe-mesh",
+        "evidence_id": "ev-005"
+      },
+      "prev_hash": "a193eaa6abe2b5c98e2754da124a70a69002a76710f9f8f639a8dddc3e7d5792",
+      "hash": "a12c128164c93c052528e7c832d01c7e1ea98b4128671f45a0b689056d0cd90c"
+    },
+    {
+      "seq": 36,
+      "ts": "2026-09-24T04:02:25+00:00",
+      "actor": "monitor:auto",
+      "action": "rollout.auto_paused",
+      "payload": {
+        "rollout_id": "rl-001",
+        "reason": "指标越界: [{'metric': 'error_rate', 'value': 0.25, 'bounds': {'max': 0.01}}]",
+        "held_batches": [
+          3
+        ]
+      },
+      "prev_hash": "a12c128164c93c052528e7c832d01c7e1ea98b4128671f45a0b689056d0cd90c",
+      "hash": "7b45b79fe5a40a83574097fdbf99a9b45bcfa76d47684057bba6ad4df27c69e5"
+    },
+    {
+      "seq": 37,
+      "ts": "2026-09-24T04:02:25+00:00",
+      "actor": "monitor:auto",
+      "action": "rollback.plan_created",
+      "payload": {
+        "rollout_id": "rl-001",
+        "reason": "指标越界: [{'metric': 'error_rate', 'value': 0.25, 'bounds': {'max': 0.01}}]",
+        "step_count": 5,
+        "order": [
+          {
+            "seq": 1,
+            "batch": 2,
+            "rule": "r-ssh",
+            "device": "d-m2"
+          },
+          {
+            "seq": 2,
+            "batch": 1,
+            "rule": "r-base",
+            "device": "d-p2"
+          },
+          {
+            "seq": 3,
+            "batch": 0,
+            "rule": "r-tel",
+            "device": "d-i2"
+          },
+          {
+            "seq": 4,
+            "batch": 0,
+            "rule": "r-ssh",
+            "device": "d-m1"
+          },
+          {
+            "seq": 5,
+            "batch": 0,
+            "rule": "r-base",
+            "device": "d-p1"
+          }
+        ]
+      },
+      "prev_hash": "7b45b79fe5a40a83574097fdbf99a9b45bcfa76d47684057bba6ad4df27c69e5",
+      "hash": "e1657015abaabfac826e9c8e1d99067fce2c79ee92fe7ec567044b5163cd5b74"
+    },
+    {
+      "seq": 38,
+      "ts": "2026-09-24T04:02:25+00:00",
+      "actor": "rollback:auto",
+      "action": "rollback.step_executed",
+      "payload": {
+        "rollout_id": "rl-001",
+        "seq": 1,
+        "command_id": "cmd-005",
+        "device_id": "d-m2",
+        "status": "done",
+        "reason": "",
+        "retry": false
+      },
+      "prev_hash": "e1657015abaabfac826e9c8e1d99067fce2c79ee92fe7ec567044b5163cd5b74",
+      "hash": "2c23588162bc4dd887217abda560dc4a06f531b536769e3e60e7c948d37f2112"
+    },
+    {
+      "seq": 39,
+      "ts": "2026-09-24T04:02:25+00:00",
+      "actor": "incident-commander",
+      "action": "rollback.step_executed",
+      "payload": {
+        "rollout_id": "rl-001",
+        "seq": 2,
+        "command_id": "cmd-004",
+        "device_id": "d-p2",
+        "status": "failed",
+        "reason": "设备拒绝撤销或超时",
+        "retry": false
+      },
+      "prev_hash": "2c23588162bc4dd887217abda560dc4a06f531b536769e3e60e7c948d37f2112",
+      "hash": "a14803e1ecbf221b12a7153173c8adfad737776e571e820713fccdf3c7bb082d"
+    },
+    {
+      "seq": 40,
+      "ts": "2026-09-24T04:02:25+00:00",
+      "actor": "rollback:auto",
+      "action": "rollback.step_executed",
+      "payload": {
+        "rollout_id": "rl-001",
+        "seq": 3,
+        "command_id": "cmd-003",
+        "device_id": "d-i2",
+        "status": "done",
+        "reason": "",
+        "retry": false
+      },
+      "prev_hash": "a14803e1ecbf221b12a7153173c8adfad737776e571e820713fccdf3c7bb082d",
+      "hash": "a77d181361a270145326f55a9f83849d8349c8f0b575aa482a3e636e745bbddf"
+    },
+    {
+      "seq": 41,
+      "ts": "2026-09-24T04:02:25+00:00",
+      "actor": "rollback:auto",
+      "action": "rollback.step_executed",
+      "payload": {
+        "rollout_id": "rl-001",
+        "seq": 4,
+        "command_id": "cmd-002",
+        "device_id": "d-m1",
+        "status": "done",
+        "reason": "",
+        "retry": false
+      },
+      "prev_hash": "a77d181361a270145326f55a9f83849d8349c8f0b575aa482a3e636e745bbddf",
+      "hash": "e0f928c353af6f0ace6cf6c1b413ffedbc28f06b43616000fa26be93b6ba31cc"
+    },
+    {
+      "seq": 42,
+      "ts": "2026-09-24T04:02:25+00:00",
+      "actor": "rollback:auto",
+      "action": "rollback.step_executed",
+      "payload": {
+        "rollout_id": "rl-001",
+        "seq": 5,
+        "command_id": "cmd-001",
+        "device_id": "d-p1",
+        "status": "done",
+        "reason": "",
+        "retry": false
+      },
+      "prev_hash": "e0f928c353af6f0ace6cf6c1b413ffedbc28f06b43616000fa26be93b6ba31cc",
+      "hash": "9a504ae17a6dd5be8e5ed35ce7179f89432ae09818b366572f19b8fe0f008e87"
+    },
+    {
+      "seq": 43,
+      "ts": "2026-09-24T04:02:25+00:00",
+      "actor": "incident-commander",
+      "action": "rollback.completed",
+      "payload": {
+        "rollout_id": "rl-001",
+        "done": 4,
+        "failed": 1,
+        "partial": true,
+        "failed_steps": [
+          {
+            "seq": 2,
+            "device": "d-p2",
+            "reason": "设备拒绝撤销或超时"
+          }
+        ]
+      },
+      "prev_hash": "9a504ae17a6dd5be8e5ed35ce7179f89432ae09818b366572f19b8fe0f008e87",
+      "hash": "04dca333043592b9378724a4aa612539a2bab642b20688bfd0d35a91edb04e3c"
+    },
+    {
+      "seq": 44,
+      "ts": "2026-09-24T04:02:25+00:00",
+      "actor": "rollback:auto",
+      "action": "rollback.step_executed",
+      "payload": {
+        "rollout_id": "rl-001",
+        "seq": 2,
+        "command_id": "cmd-004",
+        "device_id": "d-p2",
+        "status": "done",
+        "reason": "",
+        "retry": true
+      },
+      "prev_hash": "04dca333043592b9378724a4aa612539a2bab642b20688bfd0d35a91edb04e3c",
+      "hash": "e352732eca87f386c8534a8987a0b36ae081c1765da994e3f82255bbf55f5b60"
+    },
+    {
+      "seq": 45,
+      "ts": "2026-09-24T04:02:25+00:00",
+      "actor": "incident-commander",
+      "action": "rollback.completed",
+      "payload": {
+        "rollout_id": "rl-001",
+        "done": 5,
+        "failed": 0,
+        "partial": false,
+        "failed_steps": []
+      },
+      "prev_hash": "e352732eca87f386c8534a8987a0b36ae081c1765da994e3f82255bbf55f5b60",
+      "hash": "eb657de5e8fe2060e0be0e0d4b6de11abcd3b771b476c6030be659e27882c790"
+    },
+    {
+      "seq": 46,
+      "ts": "2026-09-24T04:02:25+00:00",
+      "actor": "system",
+      "action": "service.recovered",
+      "payload": {
+        "rollouts": [
+          {
+            "rollout_id": "rl-001",
+            "state": "rolled_back",
+            "cursor": 2,
+            "current_batch": null,
+            "total_batches": 4,
+            "has_rollback_plan": true
+          }
+        ]
+      },
+      "prev_hash": "eb657de5e8fe2060e0be0e0d4b6de11abcd3b771b476c6030be659e27882c790",
+      "hash": "3e3102df6d6fef378596a64490ce45b41674db3e8b96e9d5624b921d2dc032d9"
+    },
+    {
+      "seq": 47,
+      "ts": "2026-09-24T04:02:25+00:00",
+      "actor": "device",
+      "action": "receipt.received",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "command_id": "cmd-001",
+        "revision": 0,
+        "claimed_state": "dispatched",
+        "produced_at": "2026-09-24T04:02:25+00:00",
+        "accepted": false,
+        "reason": "过期回执：回执版本 r0 早于命令当前版本 r1，拒绝覆盖"
+      },
+      "prev_hash": "3e3102df6d6fef378596a64490ce45b41674db3e8b96e9d5624b921d2dc032d9",
+      "hash": "fd7a903ff6c802f30635a86a38cf96356dbf5974f24d4eab3cad7b6678ce8e17"
+    },
+    {
+      "seq": 48,
+      "ts": "2026-09-24T04:02:25+00:00",
+      "actor": "device",
+      "action": "receipt.received",
+      "payload": {
+        "rollout_id": "rl-001",
+        "batch_index": 0,
+        "command_id": "cmd-001",
+        "revision": 1,
+        "claimed_state": "acked",
+        "produced_at": "2026-09-24T04:02:25+00:00",
+        "accepted": false,
+        "reason": "乱序回执：acked(秩2) 晚到，当前状态 applied(秩4)，拒绝回退"
+      },
+      "prev_hash": "fd7a903ff6c802f30635a86a38cf96356dbf5974f24d4eab3cad7b6678ce8e17",
+      "hash": "9e47a75e642526497953203d07ebaa8f09024d58025630e38cdd38b80704e78d"
+    }
+  ]
+}

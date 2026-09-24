@@ -1,0 +1,158 @@
+{
+  "refs": {
+    "snapshot": "snap-001",
+    "policy": "pol-001",
+    "exc_long": "exc-001",
+    "exc_short": "exc-002",
+    "rollout": "rl-001"
+  },
+  "findings": {
+    "expired_exceptions": [
+      {
+        "exception_id": "exc-002",
+        "rule_id": "r-tel",
+        "state": "expired",
+        "detail": "短例外在 T0+1h 到期，T0+2h 预演明确列出为过期，不再抑制 r-tel",
+        "preflight_expired": [
+          "exc-002"
+        ]
+      },
+      {
+        "exception_id": "exc-002",
+        "state": "expired_not_deferred",
+        "detail": "过期例外不再推迟规则：r-tel 正常进入金丝雀与物联波次"
+      }
+    ],
+    "out_of_order_receipts": [
+      {
+        "command_id": "cmd-001",
+        "receipt": "r0/acked",
+        "accepted": false,
+        "reason": "过期回执：回执版本 r0 早于命令当前版本 r1，拒绝覆盖"
+      },
+      {
+        "command_id": "cmd-003",
+        "receipt": "r1/acked-after-applied",
+        "accepted": false,
+        "reason": "乱序回执：acked(秩2) 晚到，当前状态 applied(秩4)，拒绝回退"
+      },
+      {
+        "command_id": "cmd-002",
+        "receipt": "r1/applied-again",
+        "accepted": false,
+        "reason": "重复回执：状态已经是 applied，幂等忽略"
+      },
+      {
+        "command_id": "cmd-001",
+        "receipt": "post-restart-r0/dispatched",
+        "accepted": false,
+        "reason": "过期回执：回执版本 r0 早于命令当前版本 r1，拒绝覆盖"
+      },
+      {
+        "command_id": "cmd-001",
+        "receipt": "post-restart-r1/acked",
+        "accepted": false,
+        "reason": "乱序回执：acked(秩2) 晚到，当前状态 applied(秩4)，拒绝回退"
+      }
+    ],
+    "partial_rollback": [
+      {
+        "rollout_state": "partially_rolled_back",
+        "done": 4,
+        "failed": 1,
+        "failed_device": "d-p2",
+        "handling": "失败步骤不阻塞其余撤销；批次与发布单标记 partially_rolled_back，失败明细与设备原因全部入审计，允许稍后重试补偿"
+      },
+      {
+        "repeat_rollback_rejected": "首轮回退已结束且无待执行步骤；残留失败请使用 retry_rollback 补偿重试"
+      },
+      {
+        "compensation": "retry_rollback",
+        "rollout_state": "rolled_back",
+        "retried_steps": [
+          {
+            "seq": 2,
+            "device": "d-p2",
+            "status": "done"
+          }
+        ],
+        "handling": "补偿只重试上一轮失败步骤；全部成功后批次与发布单升级为 rolled_back"
+      }
+    ],
+    "duplicate_commands": [
+      {
+        "stage": "canary_redelivery",
+        "duplicates": [
+          "cmd-001",
+          "cmd-002",
+          "cmd-003"
+        ],
+        "handling": "命令按 (批次,规则,设备) 幂等去重，重复下发不产生新版本、不重开状态，仅计数并审计"
+      }
+    ],
+    "dependency_ordering": [
+      {
+        "order": [
+          {
+            "seq": 1,
+            "batch": 2,
+            "rule": "r-ssh",
+            "device": "d-m2"
+          },
+          {
+            "seq": 2,
+            "batch": 1,
+            "rule": "r-base",
+            "device": "d-p2"
+          },
+          {
+            "seq": 3,
+            "batch": 0,
+            "rule": "r-tel",
+            "device": "d-i2"
+          },
+          {
+            "seq": 4,
+            "batch": 0,
+            "rule": "r-ssh",
+            "device": "d-m1"
+          },
+          {
+            "seq": 5,
+            "batch": 0,
+            "rule": "r-base",
+            "device": "d-p1"
+          }
+        ],
+        "principle": "回退顺序 = 批次下标逆序 + 批内规则拓扑序逆序，保证被依赖规则先恢复"
+      }
+    ],
+    "restart_recovery": [
+      {
+        "audit": {
+          "ok": true,
+          "entries": 46,
+          "last_hash": "3e3102df6d6fef378596a64490ce45b41674db3e8b96e9d5624b921d2dc032d9"
+        },
+        "rollouts": [
+          {
+            "rollout_id": "rl-001",
+            "state": "rolled_back",
+            "cursor": 2,
+            "current_batch": null,
+            "total_batches": 4,
+            "has_rollback_plan": true
+          }
+        ]
+      },
+      {
+        "audit_verify": {
+          "ok": true,
+          "entries": 48,
+          "last_hash": "9e47a75e642526497953203d07ebaa8f09024d58025630e38cdd38b80704e78d"
+        }
+      }
+    ]
+  },
+  "report": "\n========================================================================\n步骤 1  建立区域拓扑快照（个人 / 机器 / 物联）\n========================================================================\n快照 snap-001 已保存，6 台设备 / 3 条链路\n策略版本 pol-001：r-ssh、r-tel 均依赖 r-base（拓扑序: r-base 先下发）\n有期限例外：exc-001(r-ssh,7天) 与 exc-002(r-tel,1小时)\nT0 预演：verdict=blocked，生效例外 ['exc-001', 'exc-002']，过期例外 []\n  链路 zp->zi/http: allow -> deny；拒绝规则 r-base 已生效\n  链路 zm->zp/ssh: allow -> allow；规则 r-ssh 被例外 exc-001 暂时抑制\n  链路 zi->zm/telemetry: deny -> deny；目的区域缺省拒绝且无可用允许规则；规则 r-tel 被例外 exc-002 暂时抑制\n能力缺口（无法落地的设备）：[('r-base', ['d-p3'])]\n\n========================================================================\n步骤 2  时间推进：例外续期、拒绝缩期、短例外自然过期\n========================================================================\nT0+10m：长例外 exc-001 续期至 30 天后（已入审计）\nT0+10m：试图把例外缩短到 1 天被拒绝 -> 例外 exc-001 续期失败：新截止时间 2026-09-25T02:10:00+00:00 不晚于当前截止时间 2026-10-24T02:10:00+00:00\nT0+2h 预演：生效例外 ['exc-001']，过期例外 ['exc-002']\nT0+2h：长例外 exc-001 被吊销（已入审计），r-ssh 恢复生效\n\n========================================================================\n步骤 3  预演通过后生成发布单：金丝雀批次 + 分区域后续波次\n========================================================================\n发布单 rl-001，共 4 批：\n  批次0 canary [金丝雀] 区域=['zi', 'zm', 'zp'] 需要角色=['release_manager', 'security_admin'] 命令=[r-base@d-p1(seq=0), r-ssh@d-m1(seq=1), r-tel@d-i2(seq=2)]\n  批次1 wave-personal-zp  区域=['zp'] 需要角色=['security_admin', 'personal_zone_owner'] 命令=[r-base@d-p2(seq=0)]\n  批次2 wave-machine-zm  区域=['zm'] 需要角色=['security_admin', 'machine_zone_owner'] 命令=[r-ssh@d-m2(seq=1)]\n  批次3 wave-iot-zi  区域=['zi'] 需要角色=['security_admin', 'iot_zone_owner'] 命令=[r-tel@d-i1(seq=2)]\n被生效例外推迟的规则：[]\n能力不满足、未生成命令的设备：[{'rule_id': 'r-base', 'device_id': 'd-p3', 'missing': ['acl-v2']}]\n\n========================================================================\n步骤 4  金丝雀批次：双角色确认 → 下发 → 回执 → 健康闸门 → 推进\n========================================================================\n已获得 release_manager 与 security_admin 双角色确认\n重复确认被拒绝：角色 security_admin 已确认过批次 0，不得重复确认\n非要求角色确认被拒绝：批次 0 不需要角色 iot_zone_owner 的确认；需要: ['release_manager', 'security_admin']\n首次下发：3 条新命令 ['cmd-001', 'cmd-002', 'cmd-003']\n网络重传导致重复下发：新命令 0 条，幂等识别重复 3 条 ['cmd-001', 'cmd-002', 'cmd-003']\n旧版本回执(r0 acked)晚到：accepted=False，过期回执：回执版本 r0 早于命令当前版本 r1，拒绝覆盖\nr-tel 的 acked 回执在 applied 之后晚到：accepted=False，乱序回执：acked(秩2) 晚到，当前状态 applied(秩4)，拒绝回退\n完全重复的 applied 回执：accepted=False，重复回执：状态已经是 applied，幂等忽略\n证据采纳前闸门：passed=False（{'availability': {'ok': False, 'reason': '缺少证据'}, 'error_rate': {'ok': False, 'reason': '缺少证据'}}）\n健康证据采纳后闸门：passed=True，applied_ratio=1.0，指标={'availability': {'ok': True, 'value': 0.9995, 'reason': ''}, 'error_rate': {'ok': True, 'value': 0.0008, 'reason': ''}}\n金丝雀推进完成：0 -> 游标 1，发布单状态 active\n\n========================================================================\n步骤 5  后续波次一：个人业务区（含旧设备 d-p3 被跳过）\n========================================================================\n个人区下发命令：['cmd-004']（旧设备 d-p3 因能力缺口无命令）\n个人区波次完成，游标推进到 2（机器区）\n\n========================================================================\n步骤 6  后续波次二：机器区观测恶化 → 自动暂停未开始批次并生成回退计划\n========================================================================\n机器区命令 cmd-005(r-ssh@d-m2) 已生效，此时错误率突增\n采纳错误率证据 0.25（上限 0.01）：越界=True，自动动作=['paused_and_rollback_planned']，发布单状态=paused\n尚未开始的批次被挂起：[3]（物联区批次未下发任何命令）\n回退计划按依赖逆序生成 5 步（后发批次先撤，同批依赖方先撤）：\n  步骤1: 批次2 r-ssh@d-m2 (下发拓扑序=1)\n  步骤2: 批次1 r-base@d-p2 (下发拓扑序=0)\n  步骤3: 批次0 r-tel@d-i2 (下发拓扑序=2)\n  步骤4: 批次0 r-ssh@d-m1 (下发拓扑序=1)\n  步骤5: 批次0 r-base@d-p1 (下发拓扑序=0)\n暂停后尝试继续下发被拒绝：发布单当前状态 paused，不能下发批次\n\n========================================================================\n步骤 7  执行回退：设备 d-p2 撤销失败 → 部分回退如实呈现\n========================================================================\n回退结束：状态=partially_rolled_back，成功 4 步，失败 1 步\n  [OK ] 步骤 1 设备 d-m2\n  [FAIL] 步骤 2 设备 d-p2\n  [OK ] 步骤 3 设备 d-i2\n  [OK ] 步骤 4 设备 d-m1\n  [OK ] 步骤 5 设备 d-p1\n  批次0 canary: rolled_back\n  批次1 wave-personal-zp: partially_rolled_back\n  批次2 wave-machine-zm: rolled_back\n  批次3 wave-iot-zi: held\n重复执行回退被拒绝：首轮回退已结束且无待执行步骤；残留失败请使用 retry_rollback 补偿重试\n设备 d-p2 恢复后补偿重试：状态=rolled_back，成功 5 步，仍失败 0 步\n\n========================================================================\n步骤 8  模拟服务重启：从持久化恢复发布游标，旧回执依旧不得覆盖\n========================================================================\n恢复发布单 rl-001：state=rolled_back cursor=2/4 current_batch=None 回退计划=有\n重启后旧 r0 回执：accepted=False（过期回执：回执版本 r0 早于命令当前版本 r1，拒绝覆盖）\n重启后 r1 acked 晚到（命令已 applied）：accepted=False（乱序回执：acked(秩2) 晚到，当前状态 applied(秩4)，拒绝回退）\n重启后重算审计哈希链：{'ok': True, 'entries': 48, 'last_hash': '9e47a75e642526497953203d07ebaa8f09024d58025630e38cdd38b80704e78d'}\n\n========================================================================\n步骤 9  验收结论汇总\n========================================================================\n[过期例外] 共 2 条证据\n  - {\"exception_id\": \"exc-002\", \"rule_id\": \"r-tel\", \"state\": \"expired\", \"detail\": \"短例外在 T0+1h 到期，T0+2h 预演明确列出为过期，不再抑制 r-tel\", \"preflight_expired\": [\"exc-002\"]}\n  - {\"exception_id\": \"exc-002\", \"state\": \"expired_not_deferred\", \"detail\": \"过期例外不再推迟规则：r-tel 正常进入金丝雀与物联波次\"}\n[乱序/重复回执] 共 5 条证据\n  - {\"command_id\": \"cmd-001\", \"receipt\": \"r0/acked\", \"accepted\": false, \"reason\": \"过期回执：回执版本 r0 早于命令当前版本 r1，拒绝覆盖\"}\n  - {\"command_id\": \"cmd-003\", \"receipt\": \"r1/acked-after-applied\", \"accepted\": false, \"reason\": \"乱序回执：acked(秩2) 晚到，当前状态 applied(秩4)，拒绝回退\"}\n  - {\"command_id\": \"cmd-002\", \"receipt\": \"r1/applied-again\", \"accepted\": false, \"reason\": \"重复回执：状态已经是 applied，幂等忽略\"}\n  - {\"command_id\": \"cmd-001\", \"receipt\": \"post-restart-r0/dispatched\", \"accepted\": false, \"reason\": \"过期回执：回执版本 r0 早于命令当前版本 r1，拒绝覆盖\"}\n  - {\"command_id\": \"cmd-001\", \"receipt\": \"post-restart-r1/acked\", \"accepted\": false, \"reason\": \"乱序回执：acked(秩2) 晚到，当前状态 applied(秩4)，拒绝回退\"}\n[部分回退] 共 3 条证据\n  - {\"rollout_state\": \"partially_rolled_back\", \"done\": 4, \"failed\": 1, \"failed_device\": \"d-p2\", \"handling\": \"失败步骤不阻塞其余撤销；批次与发布单标记 partially_rolled_back，失败明细与设备原因全部入审计，允许稍后重试补偿\"}\n  - {\"repeat_rollback_rejected\": \"首轮回退已结束且无待执行步骤；残留失败请使用 retry_rollback 补偿重试\"}\n  - {\"compensation\": \"retry_rollback\", \"rollout_state\": \"rolled_back\", \"retried_steps\": [{\"seq\": 2, \"device\": \"d-p2\", \"status\": \"done\"}], \"handling\": \"补偿只重试上一轮失败步骤；全部成功后批次与发布单升级为 rolled_back\"}\n[重复命令] 共 1 条证据\n  - {\"stage\": \"canary_redelivery\", \"duplicates\": [\"cmd-001\", \"cmd-002\", \"cmd-003\"], \"handling\": \"命令按 (批次,规则,设备) 幂等去重，重复下发不产生新版本、不重开状态，仅计数并审计\"}\n[依赖顺序] 共 1 条证据\n  - {\"order\": [{\"seq\": 1, \"batch\": 2, \"rule\": \"r-ssh\", \"device\": \"d-m2\"}, {\"seq\": 2, \"batch\": 1, \"rule\": \"r-base\", \"device\": \"d-p2\"}, {\"seq\": 3, \"batch\": 0, \"rule\": \"r-tel\", \"device\": \"d-i2\"}, {\"seq\": 4, \"batch\": 0, \"rule\": \"r-ssh\", \"device\": \"d-m1\"}, {\"seq\": 5, \"batch\": 0, \"rule\": \"r-base\", \"device\": \"d-p1\"}], \"principle\": \"回退顺序 = 批次下标逆序 + 批内规则拓扑序逆序，保证被依赖规则先恢复\"}\n[重启恢复] 共 2 条证据\n  - {\"audit\": {\"ok\": true, \"entries\": 46, \"last_hash\": \"3e3102df6d6fef378596a64490ce45b41674db3e8b96e9d5624b921d2dc032d9\"}, \"rollouts\": [{\"rollout_id\": \"rl-001\", \"state\": \"rolled_back\", \"cursor\": 2, \"current_batch\": null, \"total_batches\": 4, \"has_rollback_plan\": true}]}\n  - {\"audit_verify\": {\"ok\": true, \"entries\": 48, \"last_hash\": \"9e47a75e642526497953203d07ebaa8f09024d58025630e38cdd38b80704e78d\"}}\n\n追加式审计日志共 45 条，动作序列：\n  #  1 2026-09-24T02:00:00+00:00 topo-admin         snapshot.created\n  #  2 2026-09-24T02:00:00+00:00 security-admin     policy.created\n  #  3 2026-09-24T02:00:00+00:00 sec-ops            exception.created\n  #  4 2026-09-24T02:00:00+00:00 sec-ops            exception.created\n  #  5 2026-09-24T02:10:00+00:00 sec-ops            exception.renewed\n  #  6 2026-09-24T04:00:00+00:00 security-admin     exception.revoked\n  #  7 2026-09-24T04:00:00+00:00 release-manager    rollout.created\n  #  8 2026-09-24T04:00:00+00:00 rm-zhang           batch.approved\n  #  9 2026-09-24T04:00:00+00:00 sec-li             batch.approved\n  # 10 2026-09-24T04:00:00+00:00 dispatcher         batch.dispatched\n  # 11 2026-09-24T04:00:05+00:00 dispatcher         batch.dispatched\n  # 12 2026-09-24T04:00:35+00:00 device             receipt.received\n  # 13 2026-09-24T04:00:35+00:00 device             receipt.received\n  # 14 2026-09-24T04:00:45+00:00 device             receipt.received\n  # 15 2026-09-24T04:00:45+00:00 device             receipt.received\n  # 16 2026-09-24T04:00:45+00:00 device             receipt.received\n  # 17 2026-09-24T04:00:45+00:00 device             receipt.received\n  # 18 2026-09-24T04:00:45+00:00 device             receipt.received\n  # 19 2026-09-24T04:00:45+00:00 device             receipt.received\n  # 20 2026-09-24T04:00:45+00:00 device             receipt.received\n  # 21 2026-09-24T04:00:45+00:00 sre-oncall         evidence.adopted\n  # 22 2026-09-24T04:00:45+00:00 sre-oncall         evidence.adopted\n  # 23 2026-09-24T04:00:45+00:00 release-manager    batch.completed\n  # 24 2026-09-24T04:00:45+00:00 sec-li             batch.approved\n  # 25 2026-09-24T04:00:45+00:00 zone-chen          batch.approved\n  # 26 2026-09-24T04:00:45+00:00 dispatcher         batch.dispatched\n  # 27 2026-09-24T04:01:05+00:00 device             receipt.received\n  # 28 2026-09-24T04:01:05+00:00 sre-oncall         evidence.adopted\n  # 29 2026-09-24T04:01:05+00:00 sre-oncall         evidence.adopted\n  # 30 2026-09-24T04:01:05+00:00 release-manager    batch.completed\n  # 31 2026-09-24T04:01:05+00:00 sec-li             batch.approved\n  # 32 2026-09-24T04:01:05+00:00 zone-sun           batch.approved\n  # 33 2026-09-24T04:01:05+00:00 dispatcher         batch.dispatched\n  # 34 2026-09-24T04:01:25+00:00 device             receipt.received\n  # 35 2026-09-24T04:02:25+00:00 sre-oncall         evidence.adopted\n  # 36 2026-09-24T04:02:25+00:00 monitor:auto       rollout.auto_paused\n  # 37 2026-09-24T04:02:25+00:00 monitor:auto       rollback.plan_created\n  # 38 2026-09-24T04:02:25+00:00 rollback:auto      rollback.step_executed\n  # 39 2026-09-24T04:02:25+00:00 incident-commander rollback.step_executed\n  # 40 2026-09-24T04:02:25+00:00 rollback:auto      rollback.step_executed\n  # 41 2026-09-24T04:02:25+00:00 rollback:auto      rollback.step_executed\n  # 42 2026-09-24T04:02:25+00:00 rollback:auto      rollback.step_executed\n  # 43 2026-09-24T04:02:25+00:00 incident-commander rollback.completed\n  # 44 2026-09-24T04:02:25+00:00 rollback:auto      rollback.step_executed\n  # 45 2026-09-24T04:02:25+00:00 incident-commander rollback.completed\n\n哈希链校验：{'ok': True, 'entries': 45, 'last_hash': 'eb657de5e8fe2060e0be0e0d4b6de11abcd3b771b476c6030be659e27882c790'}"
+}

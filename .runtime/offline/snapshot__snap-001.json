@@ -1,0 +1,113 @@
+{
+  "id": "snap-001",
+  "name": "三区域融合拓扑",
+  "created_at": "2026-09-24T02:00:00+00:00",
+  "zones": [
+    {
+      "id": "zp",
+      "name": "个人业务区",
+      "kind": "personal",
+      "default_policy": "allow"
+    },
+    {
+      "id": "zm",
+      "name": "机器业务区",
+      "kind": "machine",
+      "default_policy": "deny"
+    },
+    {
+      "id": "zi",
+      "name": "物联业务区",
+      "kind": "iot",
+      "default_policy": "allow"
+    }
+  ],
+  "devices": [
+    {
+      "id": "d-p1",
+      "zone_id": "zp",
+      "name": "个人网关1",
+      "capabilities": [
+        "acl-v2"
+      ],
+      "critical": false
+    },
+    {
+      "id": "d-p2",
+      "zone_id": "zp",
+      "name": "个人网关2",
+      "capabilities": [
+        "acl-v2"
+      ],
+      "critical": false
+    },
+    {
+      "id": "d-p3",
+      "zone_id": "zp",
+      "name": "个人网关3(旧)",
+      "capabilities": [
+        "acl-v1"
+      ],
+      "critical": false
+    },
+    {
+      "id": "d-m1",
+      "zone_id": "zm",
+      "name": "机器交换机1",
+      "capabilities": [
+        "acl-v2",
+        "acl-log"
+      ],
+      "critical": false
+    },
+    {
+      "id": "d-m2",
+      "zone_id": "zm",
+      "name": "机器交换机2",
+      "capabilities": [
+        "acl-v2",
+        "acl-log"
+      ],
+      "critical": false
+    },
+    {
+      "id": "d-i1",
+      "zone_id": "zi",
+      "name": "物联边界1(关键)",
+      "capabilities": [
+        "acl-v2"
+      ],
+      "critical": true
+    },
+    {
+      "id": "d-i2",
+      "zone_id": "zi",
+      "name": "物联边界2",
+      "capabilities": [
+        "acl-v2"
+      ],
+      "critical": false
+    }
+  ],
+  "edges": [
+    {
+      "src_zone": "zp",
+      "dst_zone": "zi",
+      "service": "http",
+      "critical": false
+    },
+    {
+      "src_zone": "zm",
+      "dst_zone": "zp",
+      "service": "ssh",
+      "critical": false
+    },
+    {
+      "src_zone": "zi",
+      "dst_zone": "zm",
+      "service": "telemetry",
+      "critical": true
+    }
+  ],
+  "note": "机器区缺省拒绝，物联遥测为关键业务链路"
+}
